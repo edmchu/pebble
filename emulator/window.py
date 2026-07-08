@@ -46,6 +46,8 @@ class EmulatorWindow(QWidget):
             self.emulator.controller.left = True
         elif event.key() == Qt.Key.Key_Right:
             self.emulator.controller.right = True
+        elif event.key() == Qt.Key.Key_Enter:
+            self.emulator.conroller.start = True
 
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key.Key_Up:
@@ -56,3 +58,5 @@ class EmulatorWindow(QWidget):
             self.emulator.controller.left = False
         elif event.key() == Qt.Key.Key_Right:
             self.emulator.controller.right = False
+        elif event.key() == Qt.Key.Key_Enter:
+            self.emulator.controller.start = True

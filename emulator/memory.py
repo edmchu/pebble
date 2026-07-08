@@ -1,26 +1,52 @@
 """
 Pebble Memory
 """
-from emulator.constants import FRAMEBUFFER_START, FRAMEBUFFER_SIZE
-from emulator.constants import RAM_SIZE
+
+from emulator.constants import (
+    FRAMEBUFFER_START,
+    FRAMEBUFFER_SIZE,
+    ROM_START,
+)
+
 
 class Memory:
-    """Represents the Pebble's 8 KB of RAM."""
 
-    def __init__(self) -> None:
-        self._ram = bytearray(RAM_SIZE)
+    def __init__(self, cartridge):
 
-    def read(self, address: int) -> int:
-        """Read a byte from RAM."""
-        return self._ram[address]
+        # 8 KB total RAM
+        self.ram = bytearray(8192)
 
-    def write(self, address: int, value: int) -> None:
-        """Write a byte to RAM."""
-        self._ram[address] = value & 0xFF
+        self.cartridge = cartridge
+
+    def read(self, address):
         
-    def __getitem__(self, address):
-        return self.read(address)
-    
+        address &= 0xFFFF
+
+        # RAM
+        if address < 0x2000:
+            return self.ram[address]
+
+        # Cartridge ROM
+        if address >= ROM_START:
+            return self.cartridge.read(address - ROM_START)
+
+        # Unused hardware area
+        return 0
+
+    def write(self, address, value):
+
+        address &= 0xFFFF
+        value &= 0xFF
+
+        # RAM is writable
+        if address < 0x2000:
+            self.ram[address] = value
+
+        # ROM ignores writes
+
     def get_framebuffer(self):
-        return self._ram[:1024]
-        
+
+        return self.ram[
+            FRAMEBUFFER_START:
+            FRAMEBUFFER_START + FRAMEBUFFER_SIZE
+        ]
