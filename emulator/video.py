@@ -26,9 +26,6 @@ class Video:
         )
         self.clear()
         
-        self.memory.write(0, 0b11100100)
-        self.memory.write(1, 0b00011011)
-        
     def update(self):
         framebuffer = self.memory.get_framebuffer()
         self.clear()
@@ -36,8 +33,8 @@ class Video:
             row = i // 16
             column = (i % 16) * 4
             pixels = self.decode_byte(byte)
-            for u in range(0, 4):
-                self.set_pixel(column + u, row, COLORS[pixels[u]])
+            for offset, color_index in enumerate(pixels):
+                self.set_pixel(column + offset, row, COLORS[color_index])
         
     def decode_byte(self, byte):
         return[
