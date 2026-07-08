@@ -17,3 +17,6 @@ class Memory:
     def write(self, address: int, value: int) -> None:
         """Write a byte to RAM."""
         self._ram[address] = value & 0xFF
+        
+    def __getitem__(self, address):
+        return self.read(address)

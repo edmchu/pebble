@@ -1,7 +1,14 @@
-from emulator.memory import Memory
+import sys
+from PySide6.QtWidgets import QApplication
+from emulator.emulator import PebbleEmulator
+from emulator.window import EmulatorWindow
 
-memory = Memory()
+def main():
+    app = QApplication(sys.argv)
+    pebble = PebbleEmulator()
+    window = EmulatorWindow(pebble)
+    window.show()
+    sys.exit(app.exec())
 
-memory.write(0, 123)
-
-print(memory.read(0))
+if __name__ == "__main__":
+    main()
