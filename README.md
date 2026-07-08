@@ -1,6 +1,13 @@
 
 # Pebble
 
+ ____       _     _     _
+|  _ \ ___ | |__ | |__ | | ___
+| |_) / _ \| '_ \| '_ \| |/ _ \
+|  __/  _/ | |_) | |_) | |  __/
+|_|   \___/|_.__/|_.__/|_|\___|
+
+
 Pebble is a fantasy game console built around the W65C02 CPU.
 
 Specifications:

@@ -4,7 +4,7 @@ Main emulator window.
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget
-from constants import WINDOW_WIDTH, WINDOW_HEIGHT
+from emulator.constants import WINDOW_WIDTH, WINDOW_HEIGHT
 
 class EmulatorWindow(QWidget):
     """Main Pebble emulator window."""
