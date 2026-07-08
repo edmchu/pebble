@@ -21,6 +21,11 @@ class Video:
         )
         self.clear()
         
+        self.draw_horizontal_line(8, 31, 48, QColor("black"))
+        self.draw_vertical_line(31, 8, 48, QColor("black"))
+        self.draw_rectangle(8, 8, 21, 21, QColor("black"))
+        self.fill_rectangle(33, 33, 22, 22, QColor("black"))
+        
     def set_pixel(self, x, y, color):
         if not (0 <= x < SCREEN_WIDTH):
             return

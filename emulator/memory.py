@@ -1,6 +1,8 @@
 """
 Pebble Memory
 """
+FRAMEBUFFER_START = 0x0000
+FRAMEBUFFER_SIZE = 1024
 
 from emulator.constants import RAM_SIZE
 
@@ -20,3 +22,9 @@ class Memory:
         
     def __getitem__(self, address):
         return self.read(address)
+    
+    def framebuffer(self):
+        return self._ram[
+            FRAMEBUFFER_START:
+            FRAMEBUFFER_START + FRAMEBUFFER_SIZE
+        ]
