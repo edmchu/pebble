@@ -301,3 +301,51 @@ class CPU:
                 value = self.memory.read(address)
                 value = (value - 1) & 0xFF
                 self.memory.write(address, value)
+
+            # -----------------
+            # AND - Logical AND
+
+            case 0x29: # Immediate #
+                value = self.fetch()
+                self.a &= value
+
+            case 0x25: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.a &= value
+
+            case 0x35: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                self.a &= value
+
+            case 0x2D: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.a &= value
+
+            case 0x3D: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.a &= value
+
+            case 0x39: # Absolute, Y a,y
+                address = (self.fetch_word() + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.a &= value
+
+            case 0x21: # (Indirect, X) (zp,x)
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                value = self.memory.read(address)
+                self.a &= value
+
+            case 0x31: # (Indirect),Y (zp),y
+                pointer = self.fetch()
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = ((high << 8) | low) + self.y
+                value = self.memory.read(address & 0xFFFF)
+                self.a &= value
