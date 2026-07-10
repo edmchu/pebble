@@ -44,84 +44,43 @@ class CPU:
     def step(self):
         opcode = self.fetch()
         match opcode:
-            #
-            # NOP
-            #
-            case 0xEA:
-                pass
-            #
-            # LDA Immediate
-            #
-            case 0xA9:
-                self.a = self.fetch()
-            #
-            # LDX Immediate
-            #
-            case 0xA2:
-                self.x = self.fetch()
-            #
-            # LDY Immediate
-            #
-            case 0xA0:
-                self.y = self.fetch()
-            #
-            # TAX
-            #
-            case 0xAA:
-                self.x = self.a
-            #
-            # TAY
-            #
-            case 0xA8:
-                self.y = self.a
-            #
-            # TXA
-            #
-            case 0x8A:
-                self.a = self.x
-            #
-            # TYA
-            #
-            case 0x98:
-                self.a = self.y
-            #
-            # INX
-            #
-            case 0xE8:
-                self.x = (self.x + 1) & 0xFF
-            #
-            # DEX
-            #
-            case 0xCA:
-                self.x = (self.x - 1) & 0xFF
-            #
-            # INY
-            #
-            case 0xC8:
-                self.y = (self.y + 1) & 0xFF
-            #
-            # DEY
-            #
-            case 0x88:
-                self.y = (self.y - 1) & 0xFF
-            #
-            # JMP Absolute
-            #
-            case 0x4C:
-                self.pc = self.fetch_word()
-            #
-            # STA Absolute
-            #
-            case 0x8D:
-                address = self.fetch_word()
-                self.memory.write(
-                    address,
-                    self.a,
-                )
-            #
-            # Unknown Opcode
-            #
-            case _:
-                print(
-                    f"Opcode ${opcode:02X} not implemented."
-                )
+            # ---------------------
+            # LDA - Load A Register
+            
+            case 0xA9: # Immediate #
+                value = self.fetch()
+                self.a = value
+
+            case 0xA5: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.a = value
+            
+            case 0xB5: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.reaad(address)
+                self.a = value
+                
+            case 0xB9: # Absoulute, Y a,y
+                address = (self.fetch() + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.a = value
+                
+            case 0xA1: # (Indirect, X) zp,x
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = ((high << 8) | low)
+                address = (address + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.a = value      
+                          
+            case 0xB1: # (Indirect, Y) zp,y
+                pointer = (self.fetch() + self.y) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = ((high << 8) | low)
+                address = (address + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.a = value
+                
