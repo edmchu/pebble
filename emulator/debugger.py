@@ -34,3 +34,4 @@ class Debugger:
       self.dump_cpu()
       self.current_instruction()
       self.emulator.cpu.step()
+      print("--------------------------")

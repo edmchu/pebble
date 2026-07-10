@@ -122,7 +122,6 @@ class CPU:
             # Unknown Opcode
             #
             case _:
-
-                raise NotImplementedError(
+                print(
                     f"Opcode ${opcode:02X} not implemented."
                 )

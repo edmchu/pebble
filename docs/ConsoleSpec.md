@@ -25,8 +25,8 @@ Version: 1.0
 
 ## ROM
 
-| Address | Description |
-|----------|-------------|
+| Address     | Description         |
+|-------------|---------------------|
 | $8000-$FFFF | 32 KB Cartridge ROM |
 
 ---
