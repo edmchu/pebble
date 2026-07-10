@@ -353,36 +353,36 @@ class CPU:
             # ----------------
             # ORA - Logical OR
 
-            case 0x29: # Immediate #
+            case 0x09: # Immediate #
                 value = self.fetch()
                 self.a |= value
 
-            case 0x25: # Zero Page zp
+            case 0x05: # Zero Page zp
                 address = self.fetch()
                 value = self.memory.read(address)
                 self.a |= value
 
-            case 0x35: # Zero Page, X zp,x
+            case 0x15: # Zero Page, X zp,x
                 address = (self.fetch() + self.x) & 0xFF
                 value = self.memory.read(address)
                 self.a |= value
 
-            case 0x2D: # Absolute a
+            case 0x0D: # Absolute a
                 address = self.fetch_word()
                 value = self.memory.read(address)
                 self.a |= value
 
-            case 0x3D: # Absolute, X a,x
+            case 0x1D: # Absolute, X a,x
                 address = (self.fetch_word() + self.x) & 0xFFFF
                 value = self.memory.read(address)
                 self.a |= value
 
-            case 0x39: # Absolute, Y a,y
+            case 0x19: # Absolute, Y a,y
                 address = (self.fetch_word() + self.y) & 0xFFFF
                 value = self.memory.read(address)
                 self.a |= value
 
-            case 0x21: # (Indirect, X) (zp,x)
+            case 0x01: # (Indirect, X) (zp,x)
                 pointer = (self.fetch() + self.x) & 0xFF
                 low = self.memory.read(pointer)
                 high = self.memory.read((pointer + 1) & 0xFF)
@@ -390,10 +390,71 @@ class CPU:
                 value = self.memory.read(address)
                 self.a |= value
 
-            case 0x31: # (Indirect),Y (zp),y
+            case 0x11: # (Indirect),Y (zp),y
                 pointer = self.fetch()
                 low = self.memory.read(pointer)
                 high = self.memory.read((pointer + 1) & 0xFF)
                 address = ((high << 8) | low) + self.y
                 value = self.memory.read(address & 0xFFFF)
                 self.a |= value
+                
+            # -----------------
+            # EOR - Logical XOR
+
+            case 0x49: # Immediate #
+                value = self.fetch()
+                self.a ^= value
+
+            case 0x45: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.a ^= value
+
+            case 0x55: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                self.a ^= value
+
+            case 0x4D: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.a ^= value
+
+            case 0x5D: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.a ^= value
+
+            case 0x59: # Absolute, Y a,y
+                address = (self.fetch_word() + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.a ^= value
+
+            case 0x41: # (Indirect, X) (zp,x)
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                value = self.memory.read(address)
+                self.a ^= value
+
+            case 0x51: # (Indirect),Y (zp),y
+                pointer = self.fetch()
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = ((high << 8) | low) + self.y
+                value = self.memory.read(address & 0xFFFF)
+                self.a ^= value
+                
+            # --------------
+            # BIT - Bit Test
+            
+            case 0x24: # Zero Page
+                address = self.fetch()
+                value = self.memory.read(address)
+                # ToDo: Update Z, N and V flags
+                
+            case 0x2C: # Absolute
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                # ToDo: Update Z, N and V flags
