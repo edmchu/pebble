@@ -48,6 +48,13 @@ class EmulatorWindow(QWidget):
             self.emulator.controller.right = True
         elif event.key() == Qt.Key.Key_Enter:
             self.emulator.conroller.start = True
+        elif event.key() == Qt.Key.Key_Space:
+            self.emulator.debugger.step()
+        elif event.key() == Qt.Key.Key_R:
+            self.emulator.debugger.running = (
+                not self.emulator.debugger.running
+            )
+            print("Running:", self.emulator.debugger.running)
 
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key.Key_Up:
