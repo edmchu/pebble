@@ -248,4 +248,31 @@ class CPU:
             case 0x88:
                 self.y = (self.y -1) & 0xFF
                 
+            # ----------------------
+            # INC - Increment Memory
+            
+            case 0xE6: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                value = (value + 1) & 0xFF
+                self.memory.write(address, value)
+                
+            case 0xF6: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                value = (value + 1) & 0xFF
+                self.memory.write(address, value)
+
+            case 0xEE: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                value = (value + 1) & 0xFF
+                self.memory.write(address, value)
+                
+            case 0xFE: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                value = (value + 1) & 0xFF
+                self.memory.write(address, value)
+                
             

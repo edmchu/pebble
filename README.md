@@ -1,4 +1,4 @@
-
+`
 # Pebble
 
  ____       _     _     _
@@ -27,3 +27,8 @@ The repository contains:
 - Compiler
 - Runtime
 - Studio
+
+In folder `pebble` use the console:
+`
+`python -m emulator.main
+`
