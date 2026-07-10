@@ -29,6 +29,8 @@ The repository contains:
 - Studio
 
 In folder `pebble` use the console:
-`
-`python -m emulator.main
-`
+
+`python -m emulator.main`
+
+
+Does NOT support self modifing programs

@@ -275,4 +275,29 @@ class CPU:
                 value = (value + 1) & 0xFF
                 self.memory.write(address, value)
                 
+            # ----------------------
+            # DEC - Decrement Memory
             
+            case 0xC6: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                value = (value - 1) & 0xFF
+                self.memory.write(address, value)
+                
+            case 0xD6: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                value = (value - 1) & 0xFF
+                self.memory.write(address, value)
+                
+            case 0xCE: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                value = (value - 1) & 0xFF
+                self.memory.write(address, value)
+                
+            case 0xDE: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                value = (value - 1) & 0xFF
+                self.memory.write(address, value)
