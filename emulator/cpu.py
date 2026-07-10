@@ -122,7 +122,7 @@ class CPU:
                 address = (address +self.y) & 0xFFFF
                 self.memory.write(address, self.a)
                 
-            # ----------------
+            # ---------------------
             # LDX - Load X Register
             
             case 0xA2: # Immediate #
@@ -171,7 +171,6 @@ class CPU:
                 value = self.memory.read(address)
                 self.y = value
                 
-                
             # ----------------------
             # STX - Store X Register
             
@@ -202,3 +201,51 @@ class CPU:
                 address = self.fetch_word()
                 self.memory.write(address, self.y
                                   )
+
+            # ------------------------------
+            # Register Transfer Instructions
+            
+            # TAX A → X
+            case 0xAA:
+                self.x = self.a
+                
+            # TXA X → A
+            case 0x8A:
+                self.a = self.x
+                
+            # TAY A → Y
+            case 0xA8:
+                self.y = self.a
+                
+            # TYA Y → A
+            case 0x98:
+                self.a = self.y
+            
+            # TSX SP → X
+            case 0xBA:
+                self.x = self.sp
+                
+            # TXS X → SP No Z/N Flags
+            case 0x9A:
+                self.sp = self.x
+                
+            # ----------------
+            # Register Inc/Dec
+            
+            # INX - Inc X
+            case 0xE8:
+                self.x = (self.x + 1) & 0xFF
+            
+            # DEX - Dec X
+            case 0xCA:
+                self.x = (self.x - 1) & 0xFF
+                
+            # INY - Inc Y
+            case 0xC8:
+                self.y = (self.y + 1) & 0xFF
+            
+            # DEY - Dec Y
+            case 0x88:
+                self.y = (self.y -1) & 0xFF
+                
+            
