@@ -1,0 +1,6 @@
+LDA
+STA
+LDX
+LDY
+STX
+STY

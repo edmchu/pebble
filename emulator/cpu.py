@@ -171,4 +171,34 @@ class CPU:
                 value = self.memory.read(address)
                 self.y = value
                 
+                
+            # ----------------------
+            # STX - Store X Register
             
+            case 0x86: # Zero Page zp
+                address = self.fetch()
+                self.memory.write(address, self.x)
+                
+            case 0x96: # Zero Page, Y zp,y
+                address = (self.fetch() + self.y) & 0xFF
+                self.memory.write(address, self.x)
+            
+            case 0x8E: # Absolute a
+                address = self.fetch_word()
+                self.memory.write(address, self.x)
+                
+            # ----------------------
+            # STY - Store Y Register
+            
+            case 0x84: # Zero Page zp
+                address = self.fetch()
+                self.memory.write(address, self.y)
+                
+            case 0x94: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                self.memory.write(address, self.y)
+                
+            case 0x8C: # Absolute a
+                address = self.fetch_word()
+                self.memory.write(address, self.y
+                                  )
