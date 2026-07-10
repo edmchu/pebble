@@ -66,7 +66,7 @@ class CPU:
                 value = self.memory.read(address)
                 self.a = value
                 
-            case 0xA1: # (Indirect, X) zp,x
+            case 0xA1: # (Indirect, X) (zp,x)
                 pointer = (self.fetch() + self.x) & 0xFF
                 low = self.memory.read(pointer)
                 high = self.memory.read((pointer + 1) & 0xFF)
@@ -75,7 +75,7 @@ class CPU:
                 value = self.memory.read(address)
                 self.a = value      
                           
-            case 0xB1: # (Indirect, Y) zp,y
+            case 0xB1: # (Indirect, Y) (zp,y)
                 pointer = (self.fetch() + self.y) & 0xFF
                 low = self.memory.read(pointer)
                 high = self.memory.read((pointer + 1) & 0xFF)
@@ -84,3 +84,91 @@ class CPU:
                 value = self.memory.read(address)
                 self.a = value
                 
+            # -----------------------
+            # STA - Store Accumulator
+            
+            case 0x85: # Zero Page zp
+                address = self.fetch()
+                self.memory.write(address, self.a)
+                
+            case 0x95: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                self.memory.write(address, self.a)
+                
+            case 0x8D: # Absolute a
+                address = self.fetch_word()
+                self.memory.write(address, self.a)
+                
+            case 0x9D: # Absoulute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                self.memory.write(address, self.a)
+                
+            case 0x99: # Absolute, Y a,y
+                address = (self.fetch_word() + self.y) & 0xFFFF
+                self.memory.write(address, self.a)
+                
+            case 0x81: # (Indirect,X) (zp,x)
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                self.memory.write(address, self.a)
+                
+            case 0x91: # (Indirect),Y (zp),y
+                pointer = self.fetch()
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                address = (address +self.y) & 0xFFFF
+                self.memory.write(address, self.a)
+                
+            # ----------------
+            # LDX - Load X Register
+            
+            case 0xA2: # Immediate #
+                value = self.fetch()
+                self.x = value
+                
+            case 0xA6: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.x = value
+                
+            case 0xB6: # Zero Page, Y zp,y
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.x - value
+                
+            case 0xAE: # Absolute a
+                address = self.fetch_word()
+                vlue = self.memory.read(address)
+                self.x = value
+                
+            case 0xBE: # Absolute, Y a,y
+                address = (self.fetch_word() + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.x = value
+                
+            # ---------------------
+            # LDY - Load Y Register
+            
+            case 0xA0: # Immediate #
+                value = self.fetch()
+                self.y = value
+            
+            case 0xA4: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.y = value
+                
+            case 0xB4: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.y = value
+                
+            case 0xBC: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.y = value
+                
+            
