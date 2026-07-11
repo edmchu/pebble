@@ -657,4 +657,85 @@ class CPU:
                 value = self.memory.read(address)
                 self.sbc(value)
                 
+            # -------------------------
+            # CMP - Compare Accumulator
+
+            case 0xC9: # Immediate #
+                value = self.fetch()
+                self.cmp(self.a, value)
+
+            case 0xC5: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+
+            case 0xD5: # Zero Page,X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+
+            case 0xCD: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+
+            case 0xDD: # Absolute,X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+
+            case 0xD9: # Absolute,Y a,y
+                address = (self.fetch_word() + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+
+            case 0xC1: # (Indirect,X) (zp,x)
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+
+            case 0xD1: # (Indirect),Y (zp),y
+                pointer = self.fetch()
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                address = (address + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.cmp(self.a, value)
+                
+            # ------------------------
+            # CPX - Compare X Register
+                
+            case 0xE0: # Immediate #
+                value = self.fetch()
+                self.cmp(self.x, value)
+                
+            case 0xE4: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.cmp(self.x, value)
+                
+            case 0xEC: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.cmp(self.x, value)
+                
+            # ------------------------
+            # CPY - Compare Y Register
+
+            case 0xC0: # Immediate #
+                value = self.fetch()
+                self.cmp(self.y, value)
+                
+            case 0xC4: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.cmp(self.y, value)
             
+            case 0xCC: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.cmp(self.y, value)
