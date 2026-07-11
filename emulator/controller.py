@@ -13,3 +13,4 @@ class Controller:
         self.a = False
         self.b = False
         self.start = False
+        self.select = False

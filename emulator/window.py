@@ -21,7 +21,7 @@ class EmulatorWindow(QWidget):
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.tick)
-        self.timer.start(1000 // 30)
+        self.timer.start(1000 // 1000000)
         
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         
