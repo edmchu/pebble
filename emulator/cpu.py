@@ -73,6 +73,14 @@ class CPU:
         self.set_flag(OVERFLOW, overflow)
         self.a = result8
         self.update_zn(self.a)
+        
+    def sbc(self, value):
+        self.adc(value ^ 0xFF)
+        
+    def cmp(self, left, right):
+        result = (left - right) & 0x1FF
+        self.set_flag(CARRY, left >= right)
+        self.update_zn(result & 0xFF)
       
     #
     # CPU
@@ -600,3 +608,53 @@ class CPU:
                 address = (high << 8) | low
                 value = self.memory.read(address)
                 self.adc(value)
+                
+            # -------------------------
+            # SBC - Subtract With Carry
+            
+            case 0xE9: # Immediate #
+                value = self.fetch()
+                self.sbc(value)
+                
+            case 0xE5: # Zero Page zp
+                address = self.fetch()
+                value - self.memory.read(address)
+                self.sbc(value)
+                
+            case 0xF5: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                self.sbc(value)
+                
+            case 0xED: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.sbc(value)
+                
+            case 0xFD: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.sbc(value)
+                
+            case 0xF9: # Absolute, Y a,y
+                address = (self.fetch_word() + self.y) & 0xFFFF
+                value = self.memory.read(address)
+                self.sbc(value)
+                
+            case 0xE1: # (Indirect, X) (zp,x)
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                value = self.memory.read(address)
+                self.sbc(value)
+                
+            case 0xF1: # (Indirect, Y) (zp,y)
+                pointer = (self.fetch() + self.x) & 0xFF
+                low = self.memory.read(pointer)
+                high = self.memory.read((pointer + 1) & 0xFF)
+                address = (high << 8) | low
+                value = self.memory.read(address)
+                self.sbc(value)
+                
+            
