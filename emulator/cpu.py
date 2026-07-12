@@ -1021,6 +1021,29 @@ class CPU:
                 high = self.pop()
                 self.pc = (high << 8) | low
             
+            # --------------------------
+            # Flag Flipping Instructions
+            
+            case 0x18: # CLC Clear CARRY Flag
+                self.set_flag(CARRY, False)
+                
+            case 0x38: # SEC Set CARRY Flag
+                self.set_flag(CARRY, True)
+                
+            case 0x58: # CLI Clear INTERRUPT Disable Flag
+                self.set_flag(INTERRUPT, False)
+                
+            case 0x78: # SEI Set INTERRUPT Disable Flag
+                self.set_flag(INTERRUPT, True)
+                
+            case 0xD8: # CLD Clear DECIMAL Mode
+                self.set_flag(DECIMAL, False)
+                
+            case 0xF8: # SED Set DECIMAL Mode
+                self.set_flag(DECIMAL, True)
+                
+            case 0xB8: # CLV Clear OVERFLOW Flag
+                self.set_flag(OVERFLOW, False)
             
             # ---------------
             # Not Implemented
