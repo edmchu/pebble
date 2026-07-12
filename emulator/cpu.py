@@ -816,3 +816,112 @@ class CPU:
                 value = (value << 1) & 0xFF
                 self.update_zn(value)
             
+            # -----------------
+            # ROL - Rotate Left
+
+            case 0x2A: # Accumulator A
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (self.a & 0x80) != 0)
+                self.a = (self.a << 1) & 0xFF
+                if carry:
+                    self.a |= 0x01
+                self.update_zn(self.a)
+                
+            case 0x26: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                if carry:
+                    value |= 0x01
+                    self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x36: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                if carry:
+                    value |= 0x01
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x2E: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                if carry:
+                    value |= 0x01
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x3E: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                if carry:
+                    value |= 0x01
+                self.memory.write(address, value)
+                self.update_zn(value)
+
+            # ------------------
+            # ROR - Rotate Right
+            
+            case 0x6A: # Accumulator A
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (self.a & 0x01) != 0)
+                self.a >>= 1
+                if carry:
+                    self.a |= 0x80
+                self.update_zn(self.a)
+            
+            case 0x66: # Zero Page zp
+                address - self.fetch()
+                value = self.memory.read(address)
+                carry= self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x01) != 0)
+                value >>= 1
+                if carry:
+                    value |= 0x80
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x76: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x01) != 0)
+                value >>= 1
+                if carry:
+                    value |= 0x80
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x6E: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x01) != 0)
+                value >>= 1
+                if carry:
+                    value |= 0x80
+                self.memory.write(address, value)
+                self.update_zn(value)
+            
+            case 0x7E: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                carry = self.get_flag(CARRY)
+                self.set_flag(CARRY, (value & 0x01) != 0)
+                value >>= 1
+                if carry:
+                    value |= 0x80
+                self.memory.write(address, value)
+                self.update_zn(value)   
