@@ -1,9 +1,7 @@
 """
-6502 CPU
+6502 CPU *
 
-* The JMP Indirect bug has been fixed in this emulator instance.
-The official pebble cpu is the W65C02S because the original NMOS 6502 is out of production.
-To preserve emulation accuracy,the bug has been fixed.
+* In README.md
 """
 
 #
@@ -85,6 +83,13 @@ class CPU:
         result = (left - right) & 0x1FF
         self.set_flag(CARRY, left >= right)
         self.update_zn(result & 0xFF)
+        
+    def branch(self, condition):
+        offset = self.fetch()
+        if offset >= 0x80:
+            offset -= 0x100
+        if condition:
+            self.pc = (self.pc + offset) & 0xFFFF
       
     #
     # CPU
@@ -944,3 +949,30 @@ class CPU:
                     value |= 0x80
                 self.memory.write(address, value)
                 self.update_zn(value)   
+                
+            # -------------------
+            # Branch Instructions
+            
+            case 0x90: # BCC Branch if CARRY clear
+                self.branch(not self.get_flag(CARRY))
+            
+            case 0xB0: # BCS Branch if CARRY set
+                self.branch(self.get_flag(CARRY))
+            
+            case 0xF0: # BEQ Branch if ZERO set
+                self.branch(self.get_flag(ZERO))
+            
+            case 0x30: # BMI Branch if NEGATIVE set
+                self.branch(self.get_flag(NEGATIVE))
+                
+            case 0xD0: # BNE Branch if ZERO clear
+                self.branch(not self.get_flag(ZERO))
+                
+            case 0x10: # BPL Branch if NEGATIVE clear
+                self.branch(not self.get_flag(NEGATIVE))
+                
+            case 0x50: # BVC Branch if OVERFLOW clear
+                self.branch(not self.get_flag(OVERFLOW))
+                
+            case 0x70: # BVS Branch if OVERFLOW set
+                self.branch(self.get_flag(OVERFLOW))
