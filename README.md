@@ -34,3 +34,9 @@ In folder `pebble` use the console:
 
 
 Does NOT support self modifing programs
+
+### * Disclaimer
+This is NOT a 6502 emulator.
+The JMP Indirect bug has been fixed in this emulator instance.
+The official pebble cpu is the W65C02S because the original NMOS 6502 is out of production.
+To preserve emulation accuracy,the bug has been fixed

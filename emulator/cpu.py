@@ -1,5 +1,9 @@
 """
 6502 CPU
+
+* The JMP Indirect bug has been fixed in this emulator instance.
+The official pebble cpu is the W65C02S because the original NMOS 6502 is out of production.
+To preserve emulation accuracy,the bug has been fixed.
 """
 
 #
@@ -88,6 +92,21 @@ class CPU:
     def step(self):
         opcode = self.fetch()
         match opcode:
+            
+            # ----------
+            # JMP - Jump
+            
+            case 0x4C: # Absolute a
+                address = self.fetch_word()
+                self.pc = address
+                
+            case 0x6C: # Indirect (a)
+                pointer = self.fetch_word()
+                low = self.memory.read(pointer)
+                high = self.memory.read(pointer + 1)
+                address = (high << 8) | low
+                self.pc = address
+            
             # ---------------------
             # LDA - Load A Register
             
