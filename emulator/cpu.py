@@ -739,3 +739,80 @@ class CPU:
                 address = self.fetch_word()
                 value = self.memory.read(address)
                 self.cmp(self.y, value)
+                
+            # ---------------------------
+            # ASL - Arithmetic Shift Left
+            
+            case 0x0A: # Accumulator A
+                self.set_flag(CARRY, (self.a & 0x80) != 0)
+                self.a = (self.a << 1) & 0xFF
+                self.update_zn(self.a)
+                
+            case 0x06: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x16: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x0E: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x1E: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                self.update_zn(value)
+                
+            # ---------------------------
+            # LSR - Arithmetic Shift Right
+            
+            case 0x4A: # Accumulator A
+                self.set_flag(CARRY, (self.a & 0x80) != 0)
+                self.a = (self.a << 1) & 0xFF
+                self.update_zn(self.a)
+                
+            case 0x46: # Zero Page zp
+                address = self.fetch()
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x56: # Zero Page, X zp,x
+                address = (self.fetch() + self.x) & 0xFF
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x4E: # Absolute a
+                address = self.fetch_word()
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                self.memory.write(address, value)
+                self.update_zn(value)
+                
+            case 0x5E: # Absolute, X a,x
+                address = (self.fetch_word() + self.x) & 0xFFFF
+                value = self.memory.read(address)
+                self.set_flag(CARRY, (value & 0x80) != 0)
+                value = (value << 1) & 0xFF
+                self.update_zn(value)
+            
