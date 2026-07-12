@@ -2,14 +2,20 @@
 # Pebble
 
  ____       _     _     _
+
 |  _ \ ___ | |__ | |__ | | ___
+
 | |_) / _ \| '_ \| '_ \| |/ _ \
+
 |  __/  _/ | |_) | |_) | |  __/
+
 |_|   \___/|_.__/|_.__/|_|\___|
 
 🪨 
 
-Pebble is a fantasy game console built around the W65C02 CPU.
+pebble is a fantasy game console built around the W65C02 CPU.
+
+The pebble will not support W65C02 exclusive instructions.
 
 Specifications:
 
@@ -36,7 +42,11 @@ In folder `pebble` use the console:
 Does NOT support self modifing programs
 
 ### * Disclaimer
+
 This is NOT a 6502 emulator.
+
 The JMP Indirect bug has been fixed in this emulator instance.
+
 The official pebble cpu is the W65C02S because the original NMOS 6502 is out of production.
+
 To preserve emulation accuracy,the bug has been fixed

@@ -90,6 +90,14 @@ class CPU:
             offset -= 0x100
         if condition:
             self.pc = (self.pc + offset) & 0xFFFF
+            
+    def push(self, value):
+        self.memory.write(0x0100 + self.sp, value)
+        self.sp = (self.sp - 1) & 0xFF
+        
+    def pop(self):
+        self.sp = (self.sp + 1) & 0xFF
+        return self.memory.read(0x100 + self.sp)
       
     #
     # CPU
@@ -976,3 +984,47 @@ class CPU:
                 
             case 0x70: # BVS Branch if OVERFLOW set
                 self.branch(self.get_flag(OVERFLOW))
+                
+            # ----------------
+            # Stack Operations
+            
+            case 0x48: # PHA Push Accumulator
+                self.push(self.a)
+                
+            case 0x68: # PLA Pull Accumulator
+                self.a = self.pop()
+                self.update_zn(self.a)
+                
+            case 0x08: # PHP Push Processor Status
+                self.push(self.status | BREAK | UNUSED)
+                
+            case 0x28: # PLP Pull Processor Status
+                self.status = self.pop()
+                self.status |= UNUSED
+                
+            case 0x20: # JSR Jump To Subroutine
+                address = self.fetch_word()
+                return_address = (self.pc - 1) & 0xFFFF
+                self.push((return_address >> 8) & 0xFF)
+                self.push(return_address & 0xFF)
+                self.pc = address
+                
+            case 0x60: # RTS Return From Subroutine
+                low = self.pop()
+                high = self.pop()
+                self.pc = ((high << 8) | low) + 1
+                
+            case 0x40: # RTI Return From Interrupt
+                self.status = self.pop()
+                self.status |= UNUSED
+                low = self.pop()
+                high = self.pop()
+                self.pc = (high << 8) | low
+            
+            
+            # ---------------
+            # Not Implemented
+            
+            case 0x00:
+                raise NotImplementedError(f"{opcode}")
+ 
