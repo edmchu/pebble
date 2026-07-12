@@ -42,43 +42,69 @@ class CPU:
     def update_zn(self, value):
         value &= 0xFF
         self.set_flag(ZERO, value == 0)
-        self.set_flag(NEGATIVE, (value % 0x80) != 0)
+        self.set_flag(NEGATIVE, (value & 0x80) != 0)
 
-    def set_flag(self, flag, value):
-        if value:
-            self.status |= flag
-        else:
-            self.status &= ~flag
-            
-    def get_flag(self, flag):
-        return(self.status & flag) != 0
-        
     #
     # Fetch Helpers
     #
 
     def fetch(self):
         value = self.memory.read(self.pc)
-        self.pc += 1
+        self.pc = (self.pc + 1) & 0xFFFF
         return value
+
     def fetch_word(self):
         low = self.fetch()
         high = self.fetch()
         return (high << 8) | low
-    
+
+    #
+    # Stack Helpers
+    #
+
+    def push(self, value):
+        self.memory.write(0x0100 + self.sp, value & 0xFF)
+        self.sp = (self.sp - 1) & 0xFF
+
+    def pop(self):
+        self.sp = (self.sp + 1) & 0xFF
+        return self.memory.read(0x0100 + self.sp)
+
+    #
+    # Flag Helpers
+    #
+
+    def set_flag(self, flag, value):
+        if value:
+            self.status |= flag
+        else:
+            self.status &= ~flag
+
+    def get_flag(self, flag):
+        return (self.status & flag) != 0
+
+    def update_zn(self, value):
+        value &= 0xFF
+        self.set_flag(ZERO, value == 0)
+        self.set_flag(NEGATIVE, (value & 0x80) != 0)
+        
     def adc(self, value):
         carry = 1 if self.get_flag(CARRY) else 0
         result = self.a + value + carry
-        self.set_flag(CARRY, self.reset > 0xFF)
+        self.set_flag(CARRY, result > 0xFF)
         result8 = result & 0xFF
-        overflow = (~(self.a ^ value) & (self.a ^ result8) & 0x80) != 0
+        overflow = (
+            (~(self.a ^ value) &
+            (self.a ^ result8) &
+            0x80) != 0
+        )
         self.set_flag(OVERFLOW, overflow)
         self.a = result8
         self.update_zn(self.a)
-        
+
     def sbc(self, value):
         self.adc(value ^ 0xFF)
-        
+
     def cmp(self, left, right):
         result = (left - right) & 0x1FF
         self.set_flag(CARRY, left >= right)
@@ -90,14 +116,6 @@ class CPU:
             offset -= 0x100
         if condition:
             self.pc = (self.pc + offset) & 0xFFFF
-            
-    def push(self, value):
-        self.memory.write(0x0100 + self.sp, value)
-        self.sp = (self.sp - 1) & 0xFF
-        
-    def pop(self):
-        self.sp = (self.sp + 1) & 0xFF
-        return self.memory.read(0x100 + self.sp)
       
     #
     # CPU
@@ -136,7 +154,7 @@ class CPU:
             
             case 0xB5: # Zero Page, X zp,x
                 address = (self.fetch() + self.x) & 0xFF
-                value = self.memory.reaad(address)
+                value = self.memory.read(address)
                 self.a = value
                 self.update_zn(self.a)
                 
@@ -602,7 +620,7 @@ class CPU:
                 
             case 0x65: # Zero Page zp
                 address = self.fetch()
-                value - self.memory.read(address)
+                value = self.memory.read(address)
                 self.adc(value)
                 
             case 0x75: # Zero Page, X zp,x
@@ -650,7 +668,7 @@ class CPU:
                 
             case 0xE5: # Zero Page zp
                 address = self.fetch()
-                value - self.memory.read(address)
+                value = self.memory.read(address)
                 self.sbc(value)
                 
             case 0xF5: # Zero Page, X zp,x
@@ -867,7 +885,7 @@ class CPU:
                 value = (value << 1) & 0xFF
                 if carry:
                     value |= 0x01
-                    self.memory.write(address, value)
+                self.memory.write(address, value)
                 self.update_zn(value)
                 
             case 0x36: # Zero Page, X zp,x
@@ -915,9 +933,9 @@ class CPU:
                 self.update_zn(self.a)
             
             case 0x66: # Zero Page zp
-                address - self.fetch()
+                address = self.fetch()
                 value = self.memory.read(address)
-                carry= self.get_flag(CARRY)
+                carry = self.get_flag(CARRY)
                 self.set_flag(CARRY, (value & 0x01) != 0)
                 value >>= 1
                 if carry:
