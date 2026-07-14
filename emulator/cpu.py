@@ -25,6 +25,8 @@ class CPU:
         self.reset()
 
     def reset(self):
+        self.running = True
+        
         #
         # Registers
         #
@@ -1092,6 +1094,13 @@ class CPU:
             
             case 0xEA: # NOP No Operation
                 pass
+            
+            # -----------
+            # BRK - Break
+            
+            case 0x00: # BRK Break
+                self.running = False
+                print(f"BRK ({opcode}) at ${self.pc}")
             
             # ---------------
             # Not Implemented
